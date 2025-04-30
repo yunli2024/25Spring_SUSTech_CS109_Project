@@ -43,5 +43,8 @@ public class GameFrame extends JFrame {
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
+    public void test(){
+        System.out.println("this is test.");
+    }
 
 }
