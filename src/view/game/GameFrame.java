@@ -14,6 +14,8 @@ public class GameFrame extends JFrame {
     private JButton loadBtn;
     private JButton regretBtn;
 
+    private JButton musicPlayBtn;
+
     //上下左右的箭头
     private JButton upBtn;
     private JButton downBtn;
@@ -32,6 +34,8 @@ public class GameFrame extends JFrame {
         this.add(gamePanel);
         this.controller = new GameController(gamePanel, mapModel);
 
+       gamePanel.playBackGroundMusic("/bgm_piano.wav"); // 按按钮的时候再……
+
         //按钮在view上面的定义
         this.restartBtn = FrameUtil.createButton(this, "重新",
                 new Point(gamePanel.getWidth() + 80, 120), 80, 50);
@@ -39,6 +43,8 @@ public class GameFrame extends JFrame {
                 new Point(gamePanel.getWidth() + 80, 180), 80, 50);
         this.regretBtn=FrameUtil.createButton(this, "悔棋",
                 new Point(gamePanel.getWidth() + 160, 120), 80, 50);
+        this.musicPlayBtn=FrameUtil.createButton(this, "音乐",
+                new Point(gamePanel.getWidth() + 160, 180), 80, 50);
         this.stepLabel = FrameUtil.createJLabel(this, "开始游戏吧！",
                 new Font("serif", Font.ITALIC, 22),
                 new Point(gamePanel.getWidth() + 80, 30), 180, 50);
@@ -65,7 +71,14 @@ public class GameFrame extends JFrame {
         //todo: add other button here
         this.regretBtn.addActionListener(e -> {
             //todo 悔棋按钮
+
+            gamePanel.requestFocusInWindow();
         });
+        this.musicPlayBtn.addActionListener(e -> {
+            gamePanel.playBackGroundMusic("/musicTest.wav");
+            gamePanel.requestFocusInWindow();
+        });
+
         this.upBtn.addActionListener(e -> {
             gamePanel.doMoveUp();
             gamePanel.requestFocusInWindow();

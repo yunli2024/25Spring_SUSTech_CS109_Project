@@ -4,9 +4,14 @@ import controller.GameController;
 import model.Direction;
 import model.MapModel;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -208,6 +213,27 @@ public class GamePanel extends ListenerPanel {
                 "宝宝，你赢了！用了"+(int)(steps+1)+"步哈哈",
                 "Victory!",
                 JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    //此处是音频相关
+    public void playBackGroundMusic(String path){
+        try {
+            // 从资源文件加载音频流
+            InputStream audioSrc = getClass().getResourceAsStream(path);
+            if (audioSrc == null) {
+                throw new FileNotFoundException("音频文件未找到: " + path);
+            }
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new BufferedInputStream(audioSrc));
+
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.loop(Clip.LOOP_CONTINUOUSLY); // 循环播放
+            clip.start();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "无法播放音频: " + e.getMessage());
+        }
+
     }
 
     public void setStepLabel(JLabel stepLabel) {
