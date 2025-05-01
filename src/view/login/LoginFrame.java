@@ -9,37 +9,71 @@ import java.awt.*;
 
 public class LoginFrame extends JFrame {
     private JTextField username;
-    private JTextField password;
+    private JPasswordField password;
     private JButton submitBtn;
     private JButton resetBtn;
+    private JButton registerBtn;
+    private JButton guestBtn;
     private GameFrame gameFrame;
+    private RegisterFrame registerFrame;
 
 
     public LoginFrame(int width, int height) {
-        this.setTitle("Login Frame");
+        this.setTitle("快点登录吧~");
         this.setLayout(null);
         this.setSize(width, height);
+
+        //定义成员在frame中的位置和显示
         JLabel userLabel = FrameUtil.createJLabel(this, new Point(50, 20), 70, 40, "username:");
         JLabel passLabel = FrameUtil.createJLabel(this, new Point(50, 80), 70, 40, "password:");
         username = FrameUtil.createJTextField(this, new Point(120, 20), 120, 40);
-        password = FrameUtil.createJTextField(this, new Point(120, 80), 120, 40);
+        password = FrameUtil.createJPasswordField(this, new Point(120, 80), 120, 40);
 
-        submitBtn = FrameUtil.createButton(this, "Confirm", new Point(40, 140), 100, 40);
-        resetBtn = FrameUtil.createButton(this, "Reset", new Point(160, 140), 100, 40);
+        submitBtn = FrameUtil.createButton(this, "登录！", new Point(40, 140), 100, 40);
+        resetBtn = FrameUtil.createButton(this, "重置", new Point(160, 140), 100, 40);
+        registerBtn = FrameUtil.createButton(this,"注册",new Point(40,200),100,40);
+        guestBtn=FrameUtil.createButton(this,"游客",new Point(160,200),100,40);
 
+
+        //实现按钮什么的与事件之间的关联
+        //todo提交你的用户名和密码，还没写check
         submitBtn.addActionListener(e -> {
             System.out.println("Username = " + username.getText());
             System.out.println("Password = " + password.getText());
             if (this.gameFrame != null) {
+                //todo 小技巧 要跳转到下一个页面，就把当前这份页面setVisible(false)
                 this.gameFrame.setVisible(true);
                 this.setVisible(false);
             }
-            //todo: check login info
+            //todo: check login info 这里是要与文件IO什么的相联系了，要读取存档！
 
         });
+
+
+        //游客这方面
+        guestBtn.addActionListener(e -> {
+            if (this.gameFrame != null) {
+                JOptionPane.showMessageDialog(this,
+                        "注意，你只是一个游客，不能存档/读档/排行榜！",
+                        "Caution!",
+                        JOptionPane.INFORMATION_MESSAGE);
+                this.gameFrame.setVisible(true);
+                this.setVisible(false);
+            }
+        });
+
+        //重置
         resetBtn.addActionListener(e -> {
             username.setText("");
             password.setText("");
+        });
+
+        //注册按钮，跳转到注册的Frame
+        registerBtn.addActionListener(e -> {
+            if(this.registerFrame!=null){
+                this.registerFrame.setVisible(true);
+                this.setVisible(false);
+            }
         });
 
         this.setLocationRelativeTo(null);
@@ -49,4 +83,11 @@ public class LoginFrame extends JFrame {
     public void setGameFrame(GameFrame gameFrame) {
         this.gameFrame = gameFrame;
     }
+
+    //仿照上面的，写指向注册框架的跳转
+    public void setRegisterFrame(RegisterFrame registerFrame) {
+        this.registerFrame = registerFrame;
+    }
+
+
 }

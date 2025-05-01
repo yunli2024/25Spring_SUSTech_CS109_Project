@@ -116,7 +116,7 @@ public class GameController {
                     //再检查是否为0
                     if (model.getMatrix()[nextRow][nextCol]==0&&model.getMatrix()[nextRow][nextCol+1]==0) {
                         renewMatrixAndViewFor4(row,col,nextRow,nextCol);
-                        return true;
+                        return (isWin());
                     }
                 }
             }
@@ -124,7 +124,7 @@ public class GameController {
                 if(model.checkInHeightSize(nextRow+1)){
                     if(model.getMatrix()[nextRow+1][nextCol]==0&&model.getMatrix()[nextRow+1][nextCol+1]==0){
                         renewMatrixAndViewFor4(row,col,nextRow,nextCol);
-                        return true;
+                        return (isWin());
                     }
                 }
             }
@@ -132,7 +132,7 @@ public class GameController {
                 if(model.checkInWidthSize(nextCol)){
                     if(model.getMatrix()[nextRow][nextCol]==0&&model.getMatrix()[nextRow+1][nextCol]==0){
                         renewMatrixAndViewFor4(row,col,nextRow,nextCol);
-                        return true;
+                        return (isWin());
                     }
                 }
             }
@@ -140,7 +140,7 @@ public class GameController {
                 if(model.checkInWidthSize(nextCol+1)){
                     if(model.getMatrix()[nextRow][nextCol+1]==0&&model.getMatrix()[nextRow+1][nextCol+1]==0){
                         renewMatrixAndViewFor4(row,col,nextRow,nextCol);
-                        return true;
+                        return (isWin());
                     }
                 }
             }
@@ -190,6 +190,20 @@ public class GameController {
         box.setLocation(box.getCol() * view.getGRID_SIZE() + 2, box.getRow() * view.getGRID_SIZE() + 2);
         box.repaint();
 
+    }
+
+
+    //胜利条件的判断
+    public boolean isWin(){
+        if(model.getId(1,3)==4&&model.getId(1,4)==4&&model.getId(2,3)==4&&model.getId(2,4)==4){
+            System.out.println("恭喜你赢了！胜利次数加1（我还没做那玩意）");
+            view.showVictoryMessage();
+            restartGame();
+            return false;
+            //todo 存档的时候可以存这个id的胜利次数，搞个rank的页面
+            //todo 话说存档是某一局游戏，和用户的信息是不一样的吧？都要搞好文件IO
+        }
+        return true;
     }
 
     //todo: add other methods such as loadGame, saveGame...

@@ -31,6 +31,14 @@ public class FrameUtil {
         frame.add(jTextField);
         return jTextField;
     }
+    //为密码设置隐私性好一些的字段
+    public static JPasswordField createJPasswordField(JFrame frame,Point location,int width, int height){
+        JPasswordField jPasswordField=new JPasswordField();
+        jPasswordField.setSize(width,height);
+        jPasswordField.setLocation(location);
+        frame.add(jPasswordField);
+        return jPasswordField;
+    }
 
     public static JButton createButton(JFrame frame, String name, Point location, int width, int height) {
         JButton button = new JButton(name);

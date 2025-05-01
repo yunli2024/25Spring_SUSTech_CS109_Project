@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * It is the subclass of ListenerPanel, so that it should implement those four methods: do move left, up, down ,right.
  * The class contains a grids, which is the corresponding GUI view of the matrix variable in MapMatrix.
  */
 public class GamePanel extends ListenerPanel {
@@ -28,8 +27,6 @@ public class GamePanel extends ListenerPanel {
         this.remove(box);
         this.revalidate();
         return box;
-        //box相当于是整体！都在BoxComponent类里面
-        //todo 利用这个逻辑写移动
     }
 
     public void clearAll(){
@@ -116,6 +113,29 @@ public class GamePanel extends ListenerPanel {
         Border border = BorderFactory.createLineBorder(Color.DARK_GRAY, 2);
         this.setBorder(border);
 
+        // 绘制出口的边框
+        int exitCol = model.getWidth() - 1; // 最后一列
+        int middleRow = model.getHeight() / 2;
+        int exitRow1 = middleRow - 1;
+        int exitRow2 = middleRow;
+
+        // 确保行号不越界
+        if (exitRow1 < 0) exitRow1 = 0;
+        if (exitRow2 >= model.getHeight()) exitRow2 = model.getHeight() - 1;
+
+        Graphics2D g2d = (Graphics2D) g.create();
+        try {
+            g2d.setColor(Color.CYAN);
+            g2d.setStroke(new BasicStroke(5)); // 设置边框粗细
+            // 绘制两个边框
+            for (int row : new int[]{exitRow1, exitRow2}) {
+                int x = exitCol * GRID_SIZE + GRID_SIZE - 1;  // 右侧边缘坐标
+                int y = row * GRID_SIZE;
+                g2d.drawLine(x, y, x, y + GRID_SIZE);
+            }
+        } finally {
+            g2d.dispose();
+        }
 
     }
 
@@ -180,6 +200,14 @@ public class GamePanel extends ListenerPanel {
     public void afterMove() {
         this.steps++;
         this.stepLabel.setText(String.format("Step: %d", this.steps));
+    }
+
+    //此处是胜利的弹窗界面
+    public void showVictoryMessage() {
+        JOptionPane.showMessageDialog(this,
+                "宝宝，你赢了！用了"+(int)(steps+1)+"步哈哈",
+                "Victory!",
+                JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void setStepLabel(JLabel stepLabel) {
