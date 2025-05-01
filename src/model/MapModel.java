@@ -1,14 +1,38 @@
 package model;
 
+import javax.sql.rowset.FilteredRowSet;
+
 /**
  * This class is to record the map of one game. For example:
  */
 public class MapModel {
     int[][] matrix;
+    int[][] FirstMatrix;
+
+    public int [][] copyMatrix(int [][] matrix){
+        int [][] temp=new int[matrix.length][matrix[0].length];
+        for(int i=0;i< matrix.length;i++){
+            for(int j=0;j<matrix[0].length;j++){
+                temp[i][j]=matrix[i][j];
+            }
+        }
+        return temp;
+    }
+
+    public void getFirstMatrix(){
+        FirstMatrix=copyMatrix(matrix);
+    }
+
+    public void resetMatrixToFirst(){
+        this.matrix=copyMatrix(FirstMatrix);
+    }
 
 
     public MapModel(int[][] matrix) {
         this.matrix = matrix;
+
+        //在构造函数里面，就拷贝一份初始状态！
+        getFirstMatrix();
     }
 
     public int getWidth() {

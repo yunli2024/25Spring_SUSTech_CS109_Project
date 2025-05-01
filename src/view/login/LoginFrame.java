@@ -5,7 +5,7 @@ import view.game.GameFrame;
 
 import javax.swing.*;
 import java.awt.*;
-
+//todo 完成register的frame 并且存储注册数据
 
 public class LoginFrame extends JFrame {
     private JTextField username;

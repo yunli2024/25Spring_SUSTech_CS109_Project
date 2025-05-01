@@ -24,6 +24,21 @@ public class GamePanel extends ListenerPanel {
     private BoxComponent selectedBox;
 
 
+    public BoxComponent removeBox(BoxComponent box){
+        this.remove(box);
+        this.revalidate();
+        return box;
+        //box相当于是整体！都在BoxComponent类里面
+        //todo 利用这个逻辑写移动
+    }
+
+    public void clearAll(){
+        for(BoxComponent box:boxes){
+            removeBox(box);
+        }
+        this.boxes.clear();
+        this.repaint();
+    }
     public GamePanel(MapModel model) {
         boxes = new ArrayList<>();
         this.setVisible(true);
@@ -32,7 +47,8 @@ public class GamePanel extends ListenerPanel {
         this.setSize(model.getWidth() * GRID_SIZE + 4, model.getHeight() * GRID_SIZE + 4);
         this.model = model;
         this.selectedBox = null;
-        initialGame();
+        stepLabel = new JLabel();//这里需要进行一个new 否则空指针了
+        initialGame(this.model.getMatrix());
     }
 
     /*
@@ -42,12 +58,15 @@ public class GamePanel extends ListenerPanel {
                         {1, 2, 2, 1, 0},
                         {1, 1, 1, 1, 1}
      */
-    public void initialGame() {
+
+
+    public void initialGame(int[][] matrix) {
         this.steps = 0;
+        this.stepLabel.setText(String.format("Step: %d", this.steps));
         //copy a map
-        int[][] map = new int[model.getHeight()][model.getWidth()];
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map[0].length; j++) {
+        int[][] map = new int[matrix.length][matrix[0].length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
                 map[i][j] = model.getId(i, j);
             }
         }
