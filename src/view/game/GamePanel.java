@@ -74,6 +74,8 @@ public class GamePanel extends ListenerPanel {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
                 BoxComponent box = null;
+                //定义箱子的在这里！
+                //由此可见map只是matrix的副本 在上面提取box之后就清空。
                 if (map[i][j] == 1) {
                     box = new BoxComponent(Color.ORANGE, i, j);
                     box.setSize(GRID_SIZE, GRID_SIZE);
@@ -113,6 +115,8 @@ public class GamePanel extends ListenerPanel {
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
         Border border = BorderFactory.createLineBorder(Color.DARK_GRAY, 2);
         this.setBorder(border);
+
+
     }
 
     @Override

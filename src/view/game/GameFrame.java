@@ -13,6 +13,12 @@ public class GameFrame extends JFrame {
     private JButton restartBtn;
     private JButton loadBtn;
 
+    //上下左右的箭头
+    private JButton upBtn;
+    private JButton downBtn;
+    private JButton leftBtn;
+    private JButton rightBtn;
+
     private JLabel stepLabel;
     private GamePanel gamePanel;
 
@@ -25,11 +31,24 @@ public class GameFrame extends JFrame {
         this.add(gamePanel);
         this.controller = new GameController(gamePanel, mapModel);
 
-        this.restartBtn = FrameUtil.createButton(this, "Restart", new Point(gamePanel.getWidth() + 80, 120), 80, 50);
-        this.loadBtn = FrameUtil.createButton(this, "Load", new Point(gamePanel.getWidth() + 80, 210), 80, 50);
-        this.stepLabel = FrameUtil.createJLabel(this, "Start", new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 70), 180, 50);
+        //按钮在view上面的定义
+        this.restartBtn = FrameUtil.createButton(this, "Restart",
+                new Point(gamePanel.getWidth() + 80, 120), 80, 50);
+        this.loadBtn = FrameUtil.createButton(this, "Load",
+                new Point(gamePanel.getWidth() + 80, 180), 80, 50);
+        this.stepLabel = FrameUtil.createJLabel(this, "Start",
+                new Font("serif", Font.ITALIC, 22), new Point(gamePanel.getWidth() + 80, 30), 180, 50);
+        this.upBtn=FrameUtil.createButton(this,"👆",
+                new Point(gamePanel.getWidth()+100,230),50,50);
+        this.downBtn=FrameUtil.createButton(this,"👇",
+                new Point(gamePanel.getWidth()+100,280),50,50);
+        this.leftBtn=FrameUtil.createButton(this,"👈",
+                new Point(gamePanel.getWidth()+50,280),50,50);
+        this.rightBtn=FrameUtil.createButton(this,"👉",
+                new Point(gamePanel.getWidth()+150,280),50,50);
         gamePanel.setStepLabel(stepLabel);
 
+        //事件监听，将按钮与实际行为产生关联
         this.restartBtn.addActionListener(e -> {
             controller.restartGame();
             gamePanel.requestFocusInWindow();//enable key listener
@@ -40,12 +59,27 @@ public class GameFrame extends JFrame {
             gamePanel.requestFocusInWindow();//enable key listener
         });
         //todo: add other button here
+        this.upBtn.addActionListener(e -> {
+            gamePanel.doMoveUp();
+            gamePanel.requestFocusInWindow();
+        });
+        this.downBtn.addActionListener(e -> {
+            gamePanel.doMoveDown();
+            gamePanel.requestFocusInWindow();
+        });
+        this.leftBtn.addActionListener(e -> {
+            gamePanel.doMoveLeft();
+            gamePanel.requestFocusInWindow();
+        });
+        this.rightBtn.addActionListener(e -> {
+            gamePanel.doMoveRight();
+            gamePanel.requestFocusInWindow();
+        });
+
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
-    public void test(){
-        System.out.println("this is test.");
-    }
+
 
 
 }
