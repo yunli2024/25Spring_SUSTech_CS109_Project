@@ -10,6 +10,8 @@ public class User {
     private String userPassword;
     private int winCount;
 
+    private boolean isGuest;//增加一个游客的属性判断
+
     public int getWinCount() {
         return winCount;
     }
@@ -39,12 +41,18 @@ public class User {
     public User(String username, String userPassword) {
         this.username = username;
         this.userPassword = userPassword;
-        String path=String.format("UserData/%s/win.txt",this.username);
+
+    }
+}
+
+//todo 这里胜利次数的逻辑没有想清楚，导致展示胜利次数的功能失效了。
+//todo 可能可以将id于胜利次数绑定？写一个内部类什么的！争取独立完成这个功能
+/*
+String path=String.format("UserData/%s/win.txt",this.username);
         try {
             String str=Files.readString(Path.of(path));
             winCount=Integer.parseInt(str);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-}
+ */

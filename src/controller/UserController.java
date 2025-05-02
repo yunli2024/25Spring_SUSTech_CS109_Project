@@ -16,6 +16,9 @@ public class UserController {
 
     private MapModel mapModel;
 
+
+
+
     public static boolean isValidUser(String username,String password){
         //todo 用于验证是否与存储的data相匹配。无当前用户/密码不正确/放行
         return true;

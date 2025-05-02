@@ -69,13 +69,15 @@ public class LoginFrame extends JFrame {
                     {3,0,0,4,4},
                     {0,0,0,4,4}
             });
-            User guest=new User(null,null);
+            User guest=new User("guest","");
             GameFrame gameFrame = new GameFrame(600, 450, mapModel,guest);
                 JOptionPane.showMessageDialog(this,
                         "注意，你只是一个游客，不能存档/读档/排行榜！",
                         "Caution!",
                         JOptionPane.INFORMATION_MESSAGE);
                 gameFrame.setVisible(true);
+                gameFrame.saveBtn.setEnabled(false);
+                gameFrame.loadBtn.setEnabled(false);
                 this.setVisible(false);
 
         });

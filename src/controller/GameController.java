@@ -6,12 +6,12 @@ import user.User;
 import view.game.BoxComponent;
 import view.game.GamePanel;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * It is a bridge to combine GamePanel(view) and MapMatrix(model) in one game.
@@ -21,6 +21,9 @@ public class GameController {
     private final GamePanel view;
     private final MapModel model;
     private User user;
+
+    private Deque<HistoryEntry> history = new ArrayDeque<>();
+
 
 
     public GameController(GamePanel view, MapModel model,User user) {
@@ -39,9 +42,40 @@ public class GameController {
     }
     //悔棋的逻辑
     public void regret(){
-        //todo 记录每一步操作到data 并且要实现悔棋的功能
-        // 悔棋参考restart 还要写按钮
+        if (!history.isEmpty()) {
+            HistoryEntry entry = history.pop();
+            model.setMatrix(entry.matrix);
+            view.clearAll();
+            view.initialGame(entry.matrix, entry.steps); // 恢复步数
+        }
+        else {
+            JOptionPane.showMessageDialog(this.view,"当前已经无路可退!",
+                    "小心！",JOptionPane.INFORMATION_MESSAGE);
+        }
+
     }
+    // 内部类保存历史状态，相当于是一个结构体的作用
+    private static class HistoryEntry {
+        int[][] matrix;
+        int steps;
+        HistoryEntry(int[][] matrix, int steps) {
+            this.matrix = matrix;
+            this.steps = steps;
+        }
+    }
+    //todo 深拷贝没弄明白
+    private int[][] copyMatrix(int[][] original) {
+        return Arrays.stream(original).map(int[]::clone).toArray(int[][]::new);
+    }
+    //当前状态深拷贝之后入栈，每次即将移动的时候都执行这个操作，对当前状态进行保存
+    private void saveCurrentState() {
+        int[][] currentMatrix = copyMatrix(model.getMatrix());
+        int currentSteps = view.getSteps();
+        //把一个历史记录类的数据，加到对应类型的栈里面
+        history.push(new HistoryEntry(currentMatrix, currentSteps));
+    }
+
+
 
     //移动的相关逻辑
     public boolean doMove(int row, int col, Direction direction) {
@@ -51,6 +85,8 @@ public class GameController {
             if (model.checkInHeightSize(nextRow) && model.checkInWidthSize(nextCol)) {
                 if (model.getId(nextRow, nextCol) == 0) {
                     //更新矩阵的元素值
+                    //确认要进行变更了，先保存当前的值！
+                    saveCurrentState();
                     model.getMatrix()[row][col] = 0;
                     model.getMatrix()[nextRow][nextCol] = 1;
 
@@ -69,6 +105,7 @@ public class GameController {
             if (model.checkInHeightSize(nextRow) && model.checkInWidthSize(nextCol)){//确保不会跨越边界
                 if(direction.getRow()==0&&direction.getCol()==-1){//只会分类了，向左
                     if(model.getId(nextRow,nextCol)==0){
+                        saveCurrentState();
                         renewMatrixAndViewFor2(row, col, nextRow, nextCol);
                         return true;
                     }
@@ -76,6 +113,7 @@ public class GameController {
                 else if(direction.getRow()==0&&direction.getCol()==1){//向右的情况，检查会不会越界
                     if(model.checkInWidthSize(nextCol+1)){
                         if(model.getId(nextRow,nextCol+1)==0){
+                            saveCurrentState();
                             renewMatrixAndViewFor2(row, col, nextRow, nextCol);
                             return true;
                         }
@@ -86,6 +124,7 @@ public class GameController {
                     //这里因为有个+1 会有数组越界的问题！
                     if (model.checkInWidthSize(nextCol + 1)) {
                         if (model.getId(nextRow, nextCol) == 0 && model.getId(nextRow, nextCol + 1) == 0) {
+                            saveCurrentState();
                             renewMatrixAndViewFor2(row, col, nextRow, nextCol);
                             return true;
                         }
@@ -101,6 +140,7 @@ public class GameController {
             if (model.checkInHeightSize(nextRow) && model.checkInWidthSize(nextCol)){
                 if(direction.getRow()==0){//横着走的情况
                         if (model.getId(nextRow, nextCol) == 0 && model.getId(nextRow + 1, nextCol) == 0) {
+                            saveCurrentState();
                             renewMatrixAndViewFor3(row, col, nextRow, nextCol);
                             return true;
                         }
@@ -109,6 +149,7 @@ public class GameController {
                 else if(direction.getCol()==0&&direction.getRow()==1){//向下走
                     if(model.checkInHeightSize(nextRow+1)){
                         if(model.getId(nextRow+1,nextCol)==0){
+                            saveCurrentState();
                             renewMatrixAndViewFor3(row,col,nextRow,nextCol);
                             return true;
                         }
@@ -116,6 +157,7 @@ public class GameController {
                 }
                 else if(direction.getCol()==0&&direction.getRow()==-1){
                     if (model.getId(nextRow,nextCol)==0){
+                        saveCurrentState();
                         renewMatrixAndViewFor3(row,col,nextRow,nextCol);
                         return true;
                     }
@@ -128,6 +170,7 @@ public class GameController {
                 if(model.checkInHeightSize(nextRow)){
                     //再检查是否为0
                     if (model.getMatrix()[nextRow][nextCol]==0&&model.getMatrix()[nextRow][nextCol+1]==0) {
+                        saveCurrentState();
                         renewMatrixAndViewFor4(row,col,nextRow,nextCol);
                         return (isWin());
                     }
@@ -136,6 +179,7 @@ public class GameController {
             else if(direction.getCol()==0&&direction.getRow()==1){//向下
                 if(model.checkInHeightSize(nextRow+1)){
                     if(model.getMatrix()[nextRow+1][nextCol]==0&&model.getMatrix()[nextRow+1][nextCol+1]==0){
+                        saveCurrentState();
                         renewMatrixAndViewFor4(row,col,nextRow,nextCol);
                         return (isWin());
                     }
@@ -144,6 +188,7 @@ public class GameController {
             else if(direction.getRow()==0&&direction.getCol()==-1){//向左
                 if(model.checkInWidthSize(nextCol)){
                     if(model.getMatrix()[nextRow][nextCol]==0&&model.getMatrix()[nextRow+1][nextCol]==0){
+                        saveCurrentState();
                         renewMatrixAndViewFor4(row,col,nextRow,nextCol);
                         return (isWin());
                     }
@@ -152,6 +197,7 @@ public class GameController {
             else if(direction.getRow()==0&&direction.getCol()==1){ //向右
                 if(model.checkInWidthSize(nextCol+1)){
                     if(model.getMatrix()[nextRow][nextCol+1]==0&&model.getMatrix()[nextRow+1][nextCol+1]==0){
+                        saveCurrentState();
                         renewMatrixAndViewFor4(row,col,nextRow,nextCol);
                         return (isWin());
                     }

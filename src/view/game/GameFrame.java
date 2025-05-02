@@ -24,10 +24,10 @@ public class GameFrame extends JFrame {
     }
     private JLabel userLabel;
 
-    private JButton restartBtn;
-    private JButton loadBtn;
-    private JButton saveBtn;
-    private JButton regretBtn;
+    public JButton restartBtn;
+    public JButton loadBtn;
+    public JButton saveBtn;
+    public JButton regretBtn;
 
     private JButton musicPlayBtn;
     private JButton musicStyleBtn;
@@ -110,6 +110,7 @@ public class GameFrame extends JFrame {
 
         this.regretBtn.addActionListener(e -> {
             //todo 悔棋按钮
+            controller.regret();
 
             gamePanel.requestFocusInWindow();
         });
