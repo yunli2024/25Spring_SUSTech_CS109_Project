@@ -1,5 +1,6 @@
 import model.MapModel;
 import view.game.GameFrame;
+import view.game.MusicFrame;
 import view.login.LoginFrame;
 import view.login.RegisterFrame;
 
@@ -49,6 +50,10 @@ public class Main {
 
             registerFrame.setGameFrame(gameFrame);
             registerFrame.setLoginFrame(loginFrame);
+
+            MusicFrame musicFrame=new MusicFrame(400,500);
+            gameFrame.setMusicFrame(musicFrame);
+
         });
     }
 }

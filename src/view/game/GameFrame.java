@@ -15,6 +15,7 @@ public class GameFrame extends JFrame {
     private JButton regretBtn;
 
     private JButton musicPlayBtn;
+    private JButton musicStyleBtn;
 
     //上下左右的箭头
     private JButton upBtn;
@@ -24,9 +25,11 @@ public class GameFrame extends JFrame {
 
     private JLabel stepLabel;
     private GamePanel gamePanel;
+    private MusicFrame musicFrame;
 
+    //frame 框架主要的布局是在构造函数里面进行的 定义各个组件的位置以及事件的监听
     public GameFrame(int width, int height, MapModel mapModel) {
-        this.setTitle("2025 CS109 Project Demo");
+        this.setTitle("2025 CS109 Project by 云离");
         this.setLayout(null);
         this.setSize(width, height);
         gamePanel = new GamePanel(mapModel);
@@ -48,6 +51,8 @@ public class GameFrame extends JFrame {
         this.stepLabel = FrameUtil.createJLabel(this, "开始游戏吧！",
                 new Font("serif", Font.ITALIC, 22),
                 new Point(gamePanel.getWidth() + 80, 30), 180, 50);
+        this.musicStyleBtn=FrameUtil.createButton(this,"风格",
+                new Point(gamePanel.getWidth() + 160, 220),80,50);
         this.upBtn=FrameUtil.createButton(this,"👆",
                 new Point(gamePanel.getWidth()+100,230),50,50);
         this.downBtn=FrameUtil.createButton(this,"👇",
@@ -79,6 +84,14 @@ public class GameFrame extends JFrame {
             gamePanel.requestFocusInWindow();
         });
 
+        this.musicStyleBtn.addActionListener(e -> {
+            gamePanel.stopBackGroundMusic();
+            if(this.musicFrame!=null){
+                this.musicFrame.setVisible(true);
+            }
+            gamePanel.requestFocusInWindow();
+        });
+
         this.upBtn.addActionListener(e -> {
             gamePanel.doMoveUp();
             gamePanel.requestFocusInWindow();
@@ -98,6 +111,9 @@ public class GameFrame extends JFrame {
 
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+    public void setMusicFrame(MusicFrame musicFrame){
+        this.musicFrame=musicFrame;
     }
 
 

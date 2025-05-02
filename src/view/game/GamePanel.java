@@ -41,6 +41,9 @@ public class GamePanel extends ListenerPanel {
         this.boxes.clear();
         this.repaint();
     }
+    public GamePanel(){
+        //不知道。。。给MusicFrame用的，因为莫名其妙把playBGM的方法写到这里了
+    }
     public GamePanel(MapModel model) {
         boxes = new ArrayList<>();
         this.setVisible(true);
@@ -213,28 +216,45 @@ public class GamePanel extends ListenerPanel {
                 "宝宝，你赢了！用了"+(int)(steps+1)+"步哈哈",
                 "Victory!",
                 JOptionPane.INFORMATION_MESSAGE);
+        //todo 胜利音效和结算画面
     }
-
-    //此处是音频相关
-    public void playBackGroundMusic(String path){
+    //————————————————————————————————————————————————————————————————————————————
+    private Clip currentClip;
+    /**
+     * 此处是音频相关，一开始以为就一两个方法所以挤在这里了，
+     * 没想到后面滚雪球了，就这样吧。
+     *
+     */
+    public void playBackGroundMusic(String path) {
         try {
-            // 从资源文件加载音频流
+            stopBackGroundMusic();
+            // 加载新音乐
             InputStream audioSrc = getClass().getResourceAsStream(path);
             if (audioSrc == null) {
                 throw new FileNotFoundException("音频文件未找到: " + path);
             }
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new BufferedInputStream(audioSrc));
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(
+                    new BufferedInputStream(audioSrc)
+            );
 
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioStream);
-            clip.loop(Clip.LOOP_CONTINUOUSLY); // 循环播放
-            clip.start();
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            currentClip = AudioSystem.getClip();
+            currentClip.open(audioStream);
+            currentClip.loop(Clip.LOOP_CONTINUOUSLY);
+            currentClip.start();
+        } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "无法播放音频: " + e.getMessage());
         }
-
     }
+
+
+    public void stopBackGroundMusic() {
+        if (currentClip != null && currentClip.isRunning()) {
+            currentClip.stop();
+            currentClip.close();
+        }
+    }
+//————————————————————————————————————————————————————————————————————————————————————————————————
 
     public void setStepLabel(JLabel stepLabel) {
         this.stepLabel = stepLabel;
