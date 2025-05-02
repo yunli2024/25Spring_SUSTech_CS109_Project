@@ -2,8 +2,16 @@ package controller;
 
 import model.Direction;
 import model.MapModel;
+import user.User;
 import view.game.BoxComponent;
 import view.game.GamePanel;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * It is a bridge to combine GamePanel(view) and MapMatrix(model) in one game.
@@ -12,25 +20,30 @@ import view.game.GamePanel;
 public class GameController {
     private final GamePanel view;
     private final MapModel model;
+    private User user;
 
-    public GameController(GamePanel view, MapModel model) {
+
+    public GameController(GamePanel view, MapModel model,User user) {
         this.view = view;
         this.model = model;
+        this.user=user;
         view.setController(this);
     }
-
+    //重启的逻辑
     public void restartGame() {
         System.out.println("you restart the game! ");
-        model.resetMatrixToFirst();
-        view.clearAll();
-        view.initialGame(model.getMatrix());
+        model.resetMatrixToFirst();//model层，重新弄回到初始状态
+        view.clearAll(); //清空view层的滑块
+        view.initialGame(model.getMatrix(),0); //将model导入到view层
 
     }
-
+    //悔棋的逻辑
     public void regret(){
-        //todo 记录每一步操作到data 并且要实现悔棋的功能 悔棋参考restart 还要写按钮
+        //todo 记录每一步操作到data 并且要实现悔棋的功能
+        // 悔棋参考restart 还要写按钮
     }
 
+    //移动的相关逻辑
     public boolean doMove(int row, int col, Direction direction) {
         int nextRow = row + direction.getRow();
         int nextCol = col + direction.getCol();
@@ -196,16 +209,74 @@ public class GameController {
     //胜利条件的判断
     public boolean isWin(){
         if(model.getId(1,3)==4&&model.getId(1,4)==4&&model.getId(2,3)==4&&model.getId(2,4)==4){
-            System.out.println("恭喜你赢了！胜利次数加1（我还没做那玩意）");
+            user.setWinCount(user.getWinCount()+1);
+            System.out.printf("恭喜你赢了！胜利次数%d\n",user.getWinCount());
             view.showVictoryMessage();
             restartGame();
+            //todo 搞个rank的页面
+            String path=String.format("UserData/%s/win.txt",user.getUsername());
+            try {
+                Files.write(Path.of(path),Integer.toString(user.getWinCount()).getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             return false;
-            //todo 存档的时候可以存这个id的胜利次数，搞个rank的页面
-            //todo 话说存档是某一局游戏，和用户的信息是不一样的吧？都要搞好文件IO
         }
         return true;
     }
 
-    //todo: add other methods such as loadGame, saveGame...
+    //存档功能的逻辑实现部分
+    //todo 自动存储，（可以与悔棋相联系）   定时存储……
+    public void saveGame(User user){
+        //先把二维数组转换成字符串
+        int[][] matrix=model.getMatrix();
+        List<String> data=new ArrayList<>();
+        StringBuilder stringBuilder=new StringBuilder();
+        for(int i=0;i<matrix.length;i++){
+            for (int j=0;j<matrix[0].length;j++){
+                stringBuilder.append(matrix[i][j]);
+            }
+            if(i!=matrix.length-1) stringBuilder.append("\n");
+        }
+        data.add(stringBuilder.toString());
+        stringBuilder.setLength(0);//清空！！！啊！！
+        //test
+        for(String s:data) System.out.println(s);
+        String path=String.format("UserData/%s", user.getUsername());
+        //先要为每一个用户新建一个文件夹！
+        File dir= new File(path);
+        dir.mkdirs();
+        try {
+            Files.write(Path.of(path+"/data.txt"),data);
+            //记录存档的时候所用的步数到step.txt 谁la这了？
+            Files.write(Path.of(path+"/step.txt"),Integer.toString(view.getSteps()).getBytes());
+            System.out.println(view.getSteps());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    //读取存档
+    public void loadGame(User user){
+        String pathOfData=String.format("Userdata/%s/data.txt",user.getUsername());
+        try {
+            List<String> lines=Files.readAllLines(Path.of(pathOfData));
+            int[][]map=new int[4][5];
+            for(int i=0;i< lines.size();i++){
+                for(int j=0;j<lines.get(0).length();j++){
+                    map[i][j]=lines.get(i).charAt(j)-(int)'0';
+                }
+            }
+
+            model.setMatrix(map);
+            view.clearAll();
+            //谁拉的？
+            String pathOfStep=String.format("Userdata/%s/step.txt",user.getUsername());
+            int steps=Integer.parseInt(Files.readAllLines(Path.of(pathOfStep)).getFirst().trim());
+            view.initialGame(model.getMatrix(),steps);//
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

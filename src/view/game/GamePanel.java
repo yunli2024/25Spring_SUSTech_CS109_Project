@@ -27,6 +27,9 @@ public class GamePanel extends ListenerPanel {
     private final int GRID_SIZE = 50;
     private BoxComponent selectedBox;
 
+    public int getSteps() {
+        return steps;
+    }
 
     public BoxComponent removeBox(BoxComponent box){
         this.remove(box);
@@ -53,7 +56,7 @@ public class GamePanel extends ListenerPanel {
         this.model = model;
         this.selectedBox = null;
         stepLabel = new JLabel();//这里需要进行一个new 否则空指针了
-        initialGame(this.model.getMatrix());
+        initialGame(this.model.getMatrix(),0);
     }
 
     /*
@@ -65,8 +68,8 @@ public class GamePanel extends ListenerPanel {
      */
 
 
-    public void initialGame(int[][] matrix) {
-        this.steps = 0;
+    public void initialGame(int[][] matrix,int steps) {
+        this.steps=steps;
         this.stepLabel.setText(String.format("Step: %d", this.steps));
         //copy a map
         int[][] map = new int[matrix.length][matrix[0].length];

@@ -1,5 +1,8 @@
 package view.login;
 
+import controller.UserController;
+import model.MapModel;
+import user.User;
 import view.FrameUtil;
 import view.game.GameFrame;
 
@@ -40,26 +43,41 @@ public class LoginFrame extends JFrame {
         submitBtn.addActionListener(e -> {
             System.out.println("Username = " + username.getText());
             System.out.println("Password = " + password.getText());
-            if (this.gameFrame != null) {
-                //todo 小技巧 要跳转到下一个页面，就把当前这份页面setVisible(false)
-                this.gameFrame.setVisible(true);
+
+            //todo: check login info 这里是要与文件IO什么的相联系了，要读取存档！
+            if(UserController.isValidUser(username.getText(),password.getText())) {
+                User user = new User(username.getText(), password.getText());
+                MapModel mapModel = new MapModel(new int[][]{
+                        {2, 2, 2, 2, 1},
+                        {3, 0, 0, 0, 1},
+                        {3, 0, 0, 4, 4},
+                        {0, 0, 0, 4, 4}
+                });
+                GameFrame gameFrame = new GameFrame(600, 450, mapModel, user);
+                gameFrame.setVisible(true);
                 this.setVisible(false);
             }
-            //todo: check login info 这里是要与文件IO什么的相联系了，要读取存档！
-
+            else System.out.println("登录失败，还没写！");
         });
 
 
         //游客这方面
         guestBtn.addActionListener(e -> {
-            if (this.gameFrame != null) {
+            MapModel mapModel = new MapModel(new int[][]{
+                    {2,2,2,2,1},
+                    {3,0,0,0,1},
+                    {3,0,0,4,4},
+                    {0,0,0,4,4}
+            });
+            User guest=new User(null,null);
+            GameFrame gameFrame = new GameFrame(600, 450, mapModel,guest);
                 JOptionPane.showMessageDialog(this,
                         "注意，你只是一个游客，不能存档/读档/排行榜！",
                         "Caution!",
                         JOptionPane.INFORMATION_MESSAGE);
-                this.gameFrame.setVisible(true);
+                gameFrame.setVisible(true);
                 this.setVisible(false);
-            }
+
         });
 
         //重置
@@ -70,10 +88,10 @@ public class LoginFrame extends JFrame {
 
         //注册按钮，跳转到注册的Frame
         registerBtn.addActionListener(e -> {
-            if(this.registerFrame!=null){
-                this.registerFrame.setVisible(true);
-                this.setVisible(false);
-            }
+            RegisterFrame registerFrame=new RegisterFrame(400,300);
+            registerFrame.setVisible(true);
+            this.setVisible(false);
+
         });
 
         this.setLocationRelativeTo(null);

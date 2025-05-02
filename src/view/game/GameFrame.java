@@ -1,7 +1,9 @@
 package view.game;
 
 import controller.GameController;
+import controller.UserController;
 import model.MapModel;
+import user.User;
 import view.FrameUtil;
 
 import javax.swing.*;
@@ -10,8 +12,21 @@ import java.awt.*;
 public class GameFrame extends JFrame {
 
     private GameController controller;
+    private UserController userController;
+
+
+    private User user;  //每个游戏界面均与对应的User相绑定！
+    public User getUser() {
+        return user;
+    }
+    public void setUser(User user) {
+        this.user = user;
+    }
+    private JLabel userLabel;
+
     private JButton restartBtn;
     private JButton loadBtn;
+    private JButton saveBtn;
     private JButton regretBtn;
 
     private JButton musicPlayBtn;
@@ -28,14 +43,17 @@ public class GameFrame extends JFrame {
     private MusicFrame musicFrame;
 
     //frame 框架主要的布局是在构造函数里面进行的 定义各个组件的位置以及事件的监听
-    public GameFrame(int width, int height, MapModel mapModel) {
+    public GameFrame(int width, int height, MapModel mapModel ,User user) {
         this.setTitle("2025 CS109 Project by 云离");
         this.setLayout(null);
         this.setSize(width, height);
+        this.setUser(user);
         gamePanel = new GamePanel(mapModel);
         gamePanel.setLocation(30, height / 2 - gamePanel.getHeight() / 2);
         this.add(gamePanel);
-        this.controller = new GameController(gamePanel, mapModel);
+        this.controller = new GameController(gamePanel, mapModel,user);
+
+        this.musicFrame=new MusicFrame(400,400);
 
        gamePanel.playBackGroundMusic("/bgm_piano.wav"); // 按按钮的时候再……
 
@@ -44,6 +62,8 @@ public class GameFrame extends JFrame {
                 new Point(gamePanel.getWidth() + 80, 120), 80, 50);
         this.loadBtn = FrameUtil.createButton(this, "读档",
                 new Point(gamePanel.getWidth() + 80, 180), 80, 50);
+        this.saveBtn=FrameUtil.createButton(this,"存档",
+                new Point(gamePanel.getWidth()+200,240),80,50);
         this.regretBtn=FrameUtil.createButton(this, "悔棋",
                 new Point(gamePanel.getWidth() + 160, 120), 80, 50);
         this.musicPlayBtn=FrameUtil.createButton(this, "音乐",
@@ -51,6 +71,9 @@ public class GameFrame extends JFrame {
         this.stepLabel = FrameUtil.createJLabel(this, "开始游戏吧！",
                 new Font("serif", Font.ITALIC, 22),
                 new Point(gamePanel.getWidth() + 80, 30), 180, 50);
+        this.userLabel= FrameUtil.createJLabel(this,user.getUsername(),
+                new Font("serif", Font.ITALIC, 22),
+                new Point(gamePanel.getWidth() + 80, 60), 180, 50);
         this.musicStyleBtn=FrameUtil.createButton(this,"风格",
                 new Point(gamePanel.getWidth() + 160, 220),80,50);
         this.upBtn=FrameUtil.createButton(this,"👆",
@@ -69,11 +92,22 @@ public class GameFrame extends JFrame {
             gamePanel.requestFocusInWindow();//enable key listener
         });
         this.loadBtn.addActionListener(e -> {
-            String string = JOptionPane.showInputDialog(this, "Input path:");
-            System.out.println(string);
+            //String string = JOptionPane.showInputDialog(this, "Input path:");
+            String path=String.format("Userdata/%s/data.txt",user.getUsername());
+
+            controller.loadGame(user);
+
             gamePanel.requestFocusInWindow();//enable key listener
         });
-        //todo: add other button here
+
+        this.saveBtn.addActionListener(e ->{
+            //userController.save(user);//saveGame传递的是user
+            controller.saveGame(user);
+
+
+            gamePanel.requestFocusInWindow();
+        });
+
         this.regretBtn.addActionListener(e -> {
             //todo 悔棋按钮
 
@@ -112,9 +146,7 @@ public class GameFrame extends JFrame {
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
-    public void setMusicFrame(MusicFrame musicFrame){
-        this.musicFrame=musicFrame;
-    }
+
 
 
 

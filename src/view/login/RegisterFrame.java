@@ -47,7 +47,7 @@ public class RegisterFrame extends JFrame{
                 this.setVisible(false);
             }
         });
-
+        //todo 这里的逻辑不一定是对嘟！看清是否已经有一个Frame了，两种不同的切换页面方式！
         cancelBtn.addActionListener(e -> {
             if(this.loginFrame!=null){
                 this.loginFrame.setVisible(true);
@@ -60,13 +60,6 @@ public class RegisterFrame extends JFrame{
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    public void setGameFrame(GameFrame gameFrame) {
-        this.gameFrame = gameFrame;
-    }
-
-    public void setLoginFrame(LoginFrame loginFrame) {
-        this.loginFrame = loginFrame;
-    }
 
 
 }
