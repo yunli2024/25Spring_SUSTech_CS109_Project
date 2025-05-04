@@ -254,6 +254,7 @@ public class GameController {
                 user.setWinCount(user.getWinCount()+1);
                 System.out.printf("恭喜你赢了！胜利次数%d\n",user.getWinCount());
                 view.showVictoryMessage();
+
                 restartGame();
                 //todo 搞个rank的页面
                 String path=String.format("UserData/%s/win.txt",user.getUsername());

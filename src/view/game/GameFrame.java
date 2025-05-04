@@ -52,6 +52,14 @@ public class GameFrame extends JFrame {
         this.setLayout(null);
         this.setSize(width, height);
         this.setUser(user);//将当前的user与框架绑定？
+        //设置背景图片
+        BackgroundImagePanel backgroundPanel = new BackgroundImagePanel();
+        backgroundPanel.setLayout(null);
+        this.setContentPane(backgroundPanel);//换主题！
+        //todo 此处是默认图片，在切换主题的时候可以切换主题的图片！
+        Image backgroundImage = new ImageIcon(getClass().getResource("/fire.jpg")).getImage();
+        backgroundPanel.setBackgroundImage(backgroundImage);
+
         gamePanel = new GamePanel(mapModel);
         gamePanel.setLocation(30, height / 2 - gamePanel.getHeight() / 2);
         this.add(gamePanel);

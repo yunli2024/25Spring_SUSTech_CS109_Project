@@ -199,11 +199,13 @@ public class GamePanel extends ListenerPanel {
 
     //此处是胜利的弹窗界面
     public void showVictoryMessage() {
+        //todo 胜利音效已经做了，结算动画？
+        playMusicSound("/winGame.wav");
         JOptionPane.showMessageDialog(this,
                 "宝宝，你赢了！用了"+(int)(steps+1)+"步哈哈",
                 "Victory!",
                 JOptionPane.INFORMATION_MESSAGE);
-        //todo 胜利音效和结算画面
+
     }
     //————————————————————————————————————————————————————————————————————————————
     private Clip currentClip;
@@ -233,7 +235,25 @@ public class GamePanel extends ListenerPanel {
             JOptionPane.showMessageDialog(this, "无法播放音频: " + e.getMessage());
         }
     }
+    public void playMusicSound(String path){
+        try {
+            InputStream audioSrc = getClass().getResourceAsStream(path);
+            if (audioSrc == null) {
+                throw new FileNotFoundException("音频文件未找到: " + path);
+            }
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(
+                    new BufferedInputStream(audioSrc)
+            );
 
+            currentClip = AudioSystem.getClip();
+            currentClip.open(audioStream);
+            currentClip.loop(1);
+            currentClip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "无法播放音频: " + e.getMessage());
+        }
+    }
 
     public void stopBackGroundMusic() {
         if (currentClip != null && currentClip.isRunning()) {
