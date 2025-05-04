@@ -1,9 +1,10 @@
 package model;
 
 import java.util.Random;
-public class MapGenerator {
-    static int[][] map;
 
+public class MapGenerator {
+
+    static int[][] map;
     //经典地图
     public static int[][] generatorMap1(){
         map= new int[][]{
@@ -14,6 +15,7 @@ public class MapGenerator {
         };
         return map;
     }
+
     //测试用的
     public static int[][] generatorMapTest(){
         map= new int[][]{
@@ -24,6 +26,7 @@ public class MapGenerator {
         };
         return map;
     }
+
     //随机产生一个地图，滑块2个数2-4 滑块1个数2-4；
     public static int[][] generatorMapRandom(){
         Random random=new Random();

@@ -43,13 +43,10 @@ public class LoginFrame extends JFrame {
         submitBtn.addActionListener(e -> {
             System.out.println("Username = " + username.getText());
             System.out.println("Password = " + password.getText());
-
-
-            //todo 这里写的依托
             UserController userController=new UserController(registerFrame,loginFrame);
             if(userController.isValidUser(username.getText(),password.getText())) {
                 User user = new User(username.getText(), password.getText());
-                MapModel mapModel = new MapModel(MapGenerator.generatorMapRandom());
+                MapModel mapModel = new MapModel(MapGenerator.generatorMapTest());
                 GameFrame gameFrame = new GameFrame(600, 450, mapModel, user);
                 gameFrame.setVisible(true);
                 this.setVisible(false);
@@ -60,12 +57,7 @@ public class LoginFrame extends JFrame {
 
         //游客这方面
         guestBtn.addActionListener(e -> {
-            MapModel mapModel = new MapModel(new int[][]{
-                    {2,2,2,2,1},
-                    {3,0,0,0,1},
-                    {3,0,0,4,4},
-                    {0,0,0,4,4}
-            });
+            MapModel mapModel = new MapModel(MapGenerator.generatorMapTest());
             User guest=new User("guest","");
             GameFrame gameFrame = new GameFrame(600, 450, mapModel,guest);
                 JOptionPane.showMessageDialog(this,
@@ -76,7 +68,6 @@ public class LoginFrame extends JFrame {
                 gameFrame.saveBtn.setEnabled(false);
                 gameFrame.loadBtn.setEnabled(false);
                 this.setVisible(false);
-
         });
 
         //重置

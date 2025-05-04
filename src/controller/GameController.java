@@ -249,21 +249,28 @@ public class GameController {
     //胜利条件的判断
     public boolean isWin(){
         if(model.getId(1,3)==4&&model.getId(1,4)==4&&model.getId(2,3)==4&&model.getId(2,4)==4){
-            user.setWinCount(user.getWinCount()+1);
-            System.out.printf("恭喜你赢了！胜利次数%d\n",user.getWinCount());
-            view.showVictoryMessage();
-            restartGame();
-            //todo 搞个rank的页面
-            String path=String.format("UserData/%s/win.txt",user.getUsername());
-            //写入胜利次数？
-            try {
-                Files.write(Path.of(path),Integer.toString(user.getWinCount()).getBytes());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            //登录的用户
+            if(!user.isGuest){
+                user.setWinCount(user.getWinCount()+1);
+                System.out.printf("恭喜你赢了！胜利次数%d\n",user.getWinCount());
+                view.showVictoryMessage();
+                restartGame();
+                //todo 搞个rank的页面
+                String path=String.format("UserData/%s/win.txt",user.getUsername());
+                try {
+                    Files.write(Path.of(path),Integer.toString(user.getWinCount()).getBytes());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                return false;
             }
-            return false;
+            else {
+                view.showVictoryMessage();
+                restartGame();
+            }
+
         }
-        return true;
+        return true;//todo 这里的f和t很奇怪有人发现吗
     }
 
     //存档功能的逻辑实现部分
@@ -280,23 +287,18 @@ public class GameController {
             if(i!=matrix.length-1) stringBuilder.append("\n");
         }
         data.add(stringBuilder.toString());
-        stringBuilder.setLength(0);//清空！！！啊！！
-        //test
-        for(String s:data) System.out.println(s);
+        stringBuilder.setLength(0);//清空！！
+        // test for(String s:data) System.out.println(s);
         String path=String.format("UserData/%s", user.getUsername());
-        //先要为每一个用户新建一个文件夹！
-        //todo 这里改成在注册的时候建文件夹。
-        File dir= new File(path);
-        dir.mkdirs();
         try {
             Files.write(Path.of(path+"/data.txt"),data);
-            //记录存档的时候所用的步数到step.txt 谁la这了？
             Files.write(Path.of(path+"/step.txt"),Integer.toString(view.getSteps()).getBytes());
             System.out.println(view.getSteps());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
     //读取存档 默认的是上一次按save按钮的存档。
     public void loadGame(User user){
         String pathOfData=String.format("Userdata/%s/data.txt",user.getUsername());
@@ -308,14 +310,11 @@ public class GameController {
                     map[i][j]=lines.get(i).charAt(j)-(int)'0';
                 }
             }
-
             model.setMatrix(map);
             view.clearAll();
-            //谁拉的？
             String pathOfStep=String.format("Userdata/%s/step.txt",user.getUsername());
             int steps=Integer.parseInt(Files.readAllLines(Path.of(pathOfStep)).getFirst().trim());
-            view.initialGame(model.getMatrix(),steps);//
-
+            view.initialGame(model.getMatrix(),steps);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
