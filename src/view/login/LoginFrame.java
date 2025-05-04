@@ -1,6 +1,7 @@
 package view.login;
 
 import controller.UserController;
+import model.MapGenerator;
 import model.MapModel;
 import user.User;
 import view.FrameUtil;
@@ -18,10 +19,12 @@ public class LoginFrame extends JFrame {
     private JButton guestBtn;
     private GameFrame gameFrame;
     private RegisterFrame registerFrame;
+    private LoginFrame loginFrame;
+
 
 
     public LoginFrame(int width, int height) {
-        this.setTitle("快点登录吧~");
+        this.setTitle("超好玩来袭！~");
         this.setLayout(null);
         this.setSize(width, height);
 
@@ -41,20 +44,17 @@ public class LoginFrame extends JFrame {
             System.out.println("Username = " + username.getText());
             System.out.println("Password = " + password.getText());
 
-            //todo: check login info 这里是要与文件IO什么的相联系了，要读取存档！
-            if(UserController.isValidUser(username.getText(),password.getText())) {
+
+            //todo 这里写的依托
+            UserController userController=new UserController(registerFrame,loginFrame);
+            if(userController.isValidUser(username.getText(),password.getText())) {
                 User user = new User(username.getText(), password.getText());
-                MapModel mapModel = new MapModel(new int[][]{
-                        {2, 2, 2, 2, 1},
-                        {3, 0, 0, 0, 1},
-                        {3, 0, 0, 4, 4},
-                        {0, 0, 0, 4, 4}
-                });
+                MapModel mapModel = new MapModel(MapGenerator.generatorMapRandom());
                 GameFrame gameFrame = new GameFrame(600, 450, mapModel, user);
                 gameFrame.setVisible(true);
                 this.setVisible(false);
             }
-            else System.out.println("登录失败，还没写！");
+            else System.out.println("登录失败!");
         });
 
 
@@ -85,9 +85,9 @@ public class LoginFrame extends JFrame {
             password.setText("");
         });
 
-        //注册按钮，跳转到注册的Frame
+        //跳转到注册的Frame
         registerBtn.addActionListener(e -> {
-            RegisterFrame registerFrame=new RegisterFrame(400,300);
+            RegisterFrame registerFrame=new RegisterFrame(400,300,this);
             registerFrame.setVisible(true);
             this.setVisible(false);
         });
