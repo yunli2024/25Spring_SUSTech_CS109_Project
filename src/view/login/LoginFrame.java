@@ -6,6 +6,7 @@ import model.MapModel;
 import user.User;
 import view.FrameUtil;
 import view.game.GameFrame;
+import view.game.LevelFrame;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,9 +47,8 @@ public class LoginFrame extends JFrame {
             UserController userController=new UserController(registerFrame,loginFrame);
             if(userController.isValidUser(username.getText(),password.getText())) {
                 User user = new User(username.getText(), password.getText());
-                MapModel mapModel = new MapModel(MapGenerator.generatorMapTest());
-                GameFrame gameFrame = new GameFrame(600, 450, mapModel, user);
-                gameFrame.setVisible(true);
+                LevelFrame levelFrame=new LevelFrame(400,400,user);
+                levelFrame.setVisible(true);
                 this.setVisible(false);
             }
             else System.out.println("登录失败!");
@@ -57,16 +57,13 @@ public class LoginFrame extends JFrame {
 
         //游客这方面
         guestBtn.addActionListener(e -> {
-            MapModel mapModel = new MapModel(MapGenerator.generatorMapTest());
             User guest=new User("guest","");
-            GameFrame gameFrame = new GameFrame(600, 450, mapModel,guest);
+            LevelFrame levelFrame=new LevelFrame(400,400,guest);
                 JOptionPane.showMessageDialog(this,
                         "注意，你只是一个游客，不能存档/读档/排行榜！",
                         "Caution!",
                         JOptionPane.INFORMATION_MESSAGE);
-                gameFrame.setVisible(true);
-                gameFrame.saveBtn.setEnabled(false);
-                gameFrame.loadBtn.setEnabled(false);
+                levelFrame.setVisible(true);
                 this.setVisible(false);
         });
 

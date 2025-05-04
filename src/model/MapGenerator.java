@@ -7,13 +7,96 @@ public class MapGenerator {
     static int[][] map;
     //经典地图
     public static int[][] generatorMap1(){
-        map= new int[][]{
+        map= new int[][]{//横刀立马
                 {2, 2, 2, 2, 1},
                 {4, 4, 3, 1, 0},
                 {4, 4, 3, 1, 0},
                 {2, 2, 2, 2, 1},
         };
         return map;
+    }
+    public static int[][] generatorMap2(){
+        map= new int[][]{//指挥若定
+                {2, 2, 1, 2, 2},
+                {4, 4, 3, 1, 0},
+                {4, 4, 3, 1, 0},
+                {2, 2, 1, 2, 2},
+        };
+        return map;
+    }
+    public static int[][] generatorMap3(){
+        map= new int[][]{//兵分三路
+                {1, 2, 2, 2, 2},
+                {4, 4, 3, 1, 0},
+                {4, 4, 3, 1, 0},
+                {1, 2, 2, 2, 2},
+        };
+        return map;
+    }
+    public static int[][] generatorMap4(){
+        map= new int[][]{//桃花园中
+                {1, 2, 2, 1, 0},
+                {4, 4, 2, 2, 3},
+                {4, 4, 2, 2, 3},
+                {1, 2, 2, 1, 0},
+        };
+        return map;
+    }
+
+    public static int[][] generatorMap(){
+        Random random=new Random();
+        int randMap=random.nextInt(4)+1;
+        if (randMap==1) return generatorMap1();
+        else if(randMap==2) return generatorMap2();
+        else if(randMap==3) return generatorMap3();
+        else  return generatorMap4();
+    }
+
+    //简化版经典地图
+    public static int[][] easyGeneratorMap1(){
+        map= new int[][]{//横刀立马简化版
+                {2, 2, 0, 0, 1},
+                {4, 4, 3, 1, 0},
+                {4, 4, 3, 1, 0},
+                {2, 2, 0, 0, 1},
+        };
+        return map;
+    }
+    public static int[][] easyGeneratorMap2(){
+        map= new int[][]{//指挥若定简化版
+                {2, 2, 1, 0, 0},
+                {4, 4, 3, 1, 0},
+                {4, 4, 3, 1, 0},
+                {2, 2, 1, 0, 0},
+        };
+        return map;
+    }
+    public static int[][] easyGeneratorMap3(){
+        map= new int[][]{//兵分三路简化版
+                {1, 0, 0, 2, 2},
+                {4, 4, 3, 1, 0},
+                {4, 4, 3, 1, 0},
+                {1, 0, 0, 2, 2},
+        };
+        return map;
+    }
+    public static int[][] easyGeneratorMap4(){
+        map= new int[][]{//桃花园中简化版
+                {1, 2, 2, 1, 0},
+                {4, 4, 2, 0, 3},
+                {4, 4, 2, 0, 3},
+                {1, 2, 2, 1, 0},
+        };
+        return map;
+    }
+
+    public static int[][] easyGeneratorMap(){
+        Random random=new Random();
+        int randMap=random.nextInt(4)+1;
+        if (randMap==1) return easyGeneratorMap1();
+        else if(randMap==2) return easyGeneratorMap2();
+        else if(randMap==3) return easyGeneratorMap3();
+        else  return easyGeneratorMap4();
     }
 
     //测试用的
