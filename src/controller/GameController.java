@@ -12,25 +12,22 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-
 /**
- * It is a bridge to combine GamePanel(view) and MapMatrix(model) in one game.
- * You can design several methods about the game logic in this class.
+controller相关用于：连接模型与视图。
+ 可以在这里添加一些功能的实现逻辑。Frame的很多按钮的逻辑都是在这里实现的。
  */
 public class GameController {
     private final GamePanel view;
     private final MapModel model;
     private User user;
-
-    private Deque<HistoryEntry> history = new ArrayDeque<>();
-
-
-
+    //用History类型的栈，来保存之前的状态，进行悔棋。
+    private Deque<History> history = new ArrayDeque<>();
+    //构造函数，把当前所对应的视图/模型/用户作为参数传递进来，对他们控制。
     public GameController(GamePanel view, MapModel model,User user) {
         this.view = view;
         this.model = model;
         this.user=user;
-        view.setController(this);
+        view.setController(this);//把当前控制器也传递给view
     }
     //重启的逻辑
     public void restartGame() {
@@ -43,8 +40,8 @@ public class GameController {
     //悔棋的逻辑
     public void regret(){
         if (!history.isEmpty()) {
-            HistoryEntry entry = history.pop();
-            model.setMatrix(entry.matrix);
+            History entry = history.pop();//可以悔棋，就出栈
+            model.setMatrix(entry.matrix);//设置matrix，然后清空和更新视图！
             view.clearAll();
             view.initialGame(entry.matrix, entry.steps); // 恢复步数
         }
@@ -55,15 +52,15 @@ public class GameController {
 
     }
     // 内部类保存历史状态，相当于是一个结构体的作用
-    private static class HistoryEntry {
+    private static class History {
         int[][] matrix;
         int steps;
-        HistoryEntry(int[][] matrix, int steps) {
+        History(int[][] matrix, int steps) {
             this.matrix = matrix;
             this.steps = steps;
         }
     }
-    //todo 深拷贝没弄明白
+    //深拷贝。每一次操作完都把上一次状态进栈。
     private int[][] copyMatrix(int[][] original) {
         return Arrays.stream(original).map(int[]::clone).toArray(int[][]::new);
     }
@@ -72,10 +69,8 @@ public class GameController {
         int[][] currentMatrix = copyMatrix(model.getMatrix());
         int currentSteps = view.getSteps();
         //把一个历史记录类的数据，加到对应类型的栈里面
-        history.push(new HistoryEntry(currentMatrix, currentSteps));
+        history.push(new History(currentMatrix, currentSteps));
     }
-
-
 
     //移动的相关逻辑
     public boolean doMove(int row, int col, Direction direction) {
@@ -251,7 +246,6 @@ public class GameController {
 
     }
 
-
     //胜利条件的判断
     public boolean isWin(){
         if(model.getId(1,3)==4&&model.getId(1,4)==4&&model.getId(2,3)==4&&model.getId(2,4)==4){
@@ -261,6 +255,7 @@ public class GameController {
             restartGame();
             //todo 搞个rank的页面
             String path=String.format("UserData/%s/win.txt",user.getUsername());
+            //写入胜利次数？
             try {
                 Files.write(Path.of(path),Integer.toString(user.getWinCount()).getBytes());
             } catch (IOException e) {
@@ -272,7 +267,7 @@ public class GameController {
     }
 
     //存档功能的逻辑实现部分
-    //todo 自动存储，（可以与悔棋相联系）   定时存储……
+    //todo 自动存储定时存储……
     public void saveGame(User user){
         //先把二维数组转换成字符串
         int[][] matrix=model.getMatrix();
@@ -290,6 +285,7 @@ public class GameController {
         for(String s:data) System.out.println(s);
         String path=String.format("UserData/%s", user.getUsername());
         //先要为每一个用户新建一个文件夹！
+        //todo 这里改成在注册的时候建文件夹。
         File dir= new File(path);
         dir.mkdirs();
         try {
@@ -301,7 +297,7 @@ public class GameController {
             throw new RuntimeException(e);
         }
     }
-    //读取存档
+    //读取存档 默认的是上一次按save按钮的存档。
     public void loadGame(User user){
         String pathOfData=String.format("Userdata/%s/data.txt",user.getUsername());
         try {

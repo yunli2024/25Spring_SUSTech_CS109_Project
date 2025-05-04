@@ -6,19 +6,19 @@ import view.FrameUtil;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * 音乐界面的框架。
+ */
 public class MusicFrame extends JFrame{
     private JButton musicBtn1;
     private JButton musicBtn2;
     private JButton musicBtn3;
-
-    private GameController controller;
     private GamePanel gamePanel=new GamePanel();
 
     public MusicFrame(int width,int height){
         this.setSize(width,height);
         this.setTitle("选择喜欢的音乐风格~");
         this.setLayout(null);
-       // this.controller=???
         //按钮的位置定义
         this.musicBtn1= FrameUtil.createButton(this,"风格1",
                 new Point(50,50),100,40);

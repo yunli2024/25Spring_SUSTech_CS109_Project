@@ -16,7 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The class contains a grids, which is the corresponding GUI view of the matrix variable in MapMatrix.
+ * Panel相较于Frame 是更为轻量级的次级容器。实际view中，这一部分代表了左侧的那个棋盘。
+ * 其他的按钮还需要在Frame中布局在右侧。
+ * 这个类实现了游戏的初始化等功能，把滑块导入，重绘……
  */
 public class GamePanel extends ListenerPanel {
     private List<BoxComponent> boxes;
@@ -26,17 +28,15 @@ public class GamePanel extends ListenerPanel {
     private int steps;
     private final int GRID_SIZE = 50;
     private BoxComponent selectedBox;
-
     public int getSteps() {
         return steps;
     }
-
+    //清空的相关逻辑
     public BoxComponent removeBox(BoxComponent box){
         this.remove(box);
         this.revalidate();
         return box;
     }
-
     public void clearAll(){
         for(BoxComponent box:boxes){
             removeBox(box);
@@ -44,8 +44,9 @@ public class GamePanel extends ListenerPanel {
         this.boxes.clear();
         this.repaint();
     }
+    //构造函数
     public GamePanel(){
-        //不知道。。。给MusicFrame用的，因为莫名其妙把playBGM的方法写到这里了
+        //不知道。给MusicFrame用的，因为莫名其妙把playBGM的方法写到这里了
     }
     public GamePanel(MapModel model) {
         boxes = new ArrayList<>();
@@ -56,33 +57,24 @@ public class GamePanel extends ListenerPanel {
         this.model = model;
         this.selectedBox = null;
         stepLabel = new JLabel();//这里需要进行一个new 否则空指针了
-        initialGame(this.model.getMatrix(),0);
+        initialGame(this.model.getMatrix(),0);//调用initial方法进行初始化
     }
-
-    /*
-                        {1, 2, 2, 1, 1},
-                        {3, 4, 4, 2, 2},
-                        {3, 4, 4, 1, 0},
-                        {1, 2, 2, 1, 0},
-                        {1, 1, 1, 1, 1}
-     */
-
-
+    //初始化游戏的方法
     public void initialGame(int[][] matrix,int steps) {
         this.steps=steps;
         this.stepLabel.setText(String.format("Step: %d", this.steps));
-        //copy a map
+        //此处把model中的底层矩阵拷贝成map
+        //注意map是临时的，只用于构建里面的滑块
         int[][] map = new int[matrix.length][matrix[0].length];
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
                 map[i][j] = model.getId(i, j);
             }
         }
-        //build Component
+        //构建滑块
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[0].length; j++) {
                 BoxComponent box = null;
-                //定义箱子的在这里！
                 //由此可见map只是matrix的副本 在上面提取box之后就清空。
                 if (map[i][j] == 1) {
                     box = new BoxComponent(Color.ORANGE, i, j);
@@ -115,7 +107,7 @@ public class GamePanel extends ListenerPanel {
         }
         this.repaint();
     }
-
+    //重写paintComponent
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -123,17 +115,14 @@ public class GamePanel extends ListenerPanel {
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
         Border border = BorderFactory.createLineBorder(Color.DARK_GRAY, 2);
         this.setBorder(border);
-
-        // 绘制出口的边框
+        // 以下代码绘制出口的边框
         int exitCol = model.getWidth() - 1; // 最后一列
         int middleRow = model.getHeight() / 2;
         int exitRow1 = middleRow - 1;
         int exitRow2 = middleRow;
-
         // 确保行号不越界
         if (exitRow1 < 0) exitRow1 = 0;
         if (exitRow2 >= model.getHeight()) exitRow2 = model.getHeight() - 1;
-
         Graphics2D g2d = (Graphics2D) g.create();
         try {
             g2d.setColor(Color.CYAN);
@@ -147,9 +136,8 @@ public class GamePanel extends ListenerPanel {
         } finally {
             g2d.dispose();
         }
-
     }
-
+    //实现listener中的事件监听
     @Override
     public void doMouseClick(Point point) {
         Component component = this.getComponentAt(point);
@@ -167,7 +155,6 @@ public class GamePanel extends ListenerPanel {
             }
         }
     }
-
     @Override
     public void doMoveRight() {
         System.out.println("Click VK_RIGHT");
@@ -177,7 +164,6 @@ public class GamePanel extends ListenerPanel {
             }
         }
     }
-
     @Override
     public void doMoveLeft() {
         System.out.println("Click VK_LEFT");
@@ -187,7 +173,6 @@ public class GamePanel extends ListenerPanel {
             }
         }
     }
-
     @Override
     public void doMoveUp() {
         System.out.println("Click VK_Up");
@@ -197,7 +182,6 @@ public class GamePanel extends ListenerPanel {
             }
         }
     }
-
     @Override
     public void doMoveDown() {
         System.out.println("Click VK_DOWN");
@@ -262,16 +246,12 @@ public class GamePanel extends ListenerPanel {
     public void setStepLabel(JLabel stepLabel) {
         this.stepLabel = stepLabel;
     }
-
-
     public void setController(GameController controller) {
         this.controller = controller;
     }
-
     public BoxComponent getSelectedBox() {
         return selectedBox;
     }
-
     public int getGRID_SIZE() {
         return GRID_SIZE;
     }

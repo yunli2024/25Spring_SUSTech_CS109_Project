@@ -6,7 +6,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 /**
- * This class is only to enable key events.
+ * 抽象类，允许鼠标和键盘的控制。
+ * 后续可以不怎么动他。
  */
 public abstract class ListenerPanel extends JPanel {
     public ListenerPanel() {

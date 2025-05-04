@@ -4,13 +4,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-//注意！每一个User是与GameFrame互相绑定的！
+/**
+ * User类 包含每一个用户的相关信息。数据储存在UserData中
+ * 注意！每一个User是与GameFrame互相绑定的！
+ */
+
 public class User {
     private String username;
     private String userPassword;
     private int winCount;
 
-    private boolean isGuest;//增加一个游客的属性判断
+    private boolean isGuest;// todo 增加一个游客的属性判断
 
     public int getWinCount() {
         return winCount;

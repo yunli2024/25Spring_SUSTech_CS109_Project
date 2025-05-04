@@ -4,6 +4,9 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 
+/**
+ * 这个类是滑块的相关参数和状态。
+ */
 public class BoxComponent extends JComponent {
     private Color color;
     private int row;

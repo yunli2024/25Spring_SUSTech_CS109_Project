@@ -55,7 +55,7 @@ public class RegisterFrame extends JFrame{
             }
         });
 
-        //这个设置可以关掉界面的时候就结束程序的运行
+
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }

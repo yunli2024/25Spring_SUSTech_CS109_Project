@@ -9,12 +9,16 @@ import view.FrameUtil;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * 这个类是整个游戏界面的框架部分。
+ * Frame是纯前端，只管按钮的分布和事件监听，具体实现都是调用controller或者Panel方法
+ */
 public class GameFrame extends JFrame {
-
+    //控制相关
     private GameController controller;
     private UserController userController;
 
-
+    //用户相关
     private User user;  //每个游戏界面均与对应的User相绑定！
     public User getUser() {
         return user;
@@ -24,14 +28,14 @@ public class GameFrame extends JFrame {
     }
     private JLabel userLabel;
 
+    //功能按钮
     public JButton restartBtn;
     public JButton loadBtn;
     public JButton saveBtn;
     public JButton regretBtn;
-
+    //音乐按钮
     private JButton musicPlayBtn;
     private JButton musicStyleBtn;
-
     //上下左右的箭头
     private JButton upBtn;
     private JButton downBtn;
@@ -47,16 +51,13 @@ public class GameFrame extends JFrame {
         this.setTitle("2025 CS109 Project by 云离");
         this.setLayout(null);
         this.setSize(width, height);
-        this.setUser(user);
+        this.setUser(user);//将当前的user与框架绑定？
         gamePanel = new GamePanel(mapModel);
         gamePanel.setLocation(30, height / 2 - gamePanel.getHeight() / 2);
         this.add(gamePanel);
         this.controller = new GameController(gamePanel, mapModel,user);
-
-        this.musicFrame=new MusicFrame(400,400);
-
-       gamePanel.playBackGroundMusic("/bgm_piano.wav"); // 按按钮的时候再……
-
+        //默认初始的bgm
+        gamePanel.playBackGroundMusic("/bgm_piano.wav"); // 按按钮的时候再……
         //按钮在view上面的定义
         this.restartBtn = FrameUtil.createButton(this, "重新",
                 new Point(gamePanel.getWidth() + 80, 120), 80, 50);
@@ -92,38 +93,27 @@ public class GameFrame extends JFrame {
             gamePanel.requestFocusInWindow();//enable key listener
         });
         this.loadBtn.addActionListener(e -> {
-            //String string = JOptionPane.showInputDialog(this, "Input path:");
-            String path=String.format("Userdata/%s/data.txt",user.getUsername());
-
             controller.loadGame(user);
-
             gamePanel.requestFocusInWindow();//enable key listener
         });
-
         this.saveBtn.addActionListener(e ->{
-            //userController.save(user);//saveGame传递的是user
             controller.saveGame(user);
-
-
             gamePanel.requestFocusInWindow();
         });
 
         this.regretBtn.addActionListener(e -> {
-            //todo 悔棋按钮
             controller.regret();
-
             gamePanel.requestFocusInWindow();
         });
         this.musicPlayBtn.addActionListener(e -> {
             gamePanel.playBackGroundMusic("/musicTest.wav");
             gamePanel.requestFocusInWindow();
         });
-
         this.musicStyleBtn.addActionListener(e -> {
             gamePanel.stopBackGroundMusic();
-            if(this.musicFrame!=null){
-                this.musicFrame.setVisible(true);
-            }
+            //此处新建一个音乐的框架
+            this.musicFrame=new MusicFrame(400,400);
+            this.musicFrame.setVisible(true);
             gamePanel.requestFocusInWindow();
         });
 
@@ -143,12 +133,7 @@ public class GameFrame extends JFrame {
             gamePanel.doMoveRight();
             gamePanel.requestFocusInWindow();
         });
-
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
-
-
-
-
 }

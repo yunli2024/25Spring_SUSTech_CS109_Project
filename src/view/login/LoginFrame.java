@@ -8,7 +8,6 @@ import view.game.GameFrame;
 
 import javax.swing.*;
 import java.awt.*;
-//todo 完成register的frame 并且存储注册数据
 
 public class LoginFrame extends JFrame {
     private JTextField username;
@@ -37,9 +36,7 @@ public class LoginFrame extends JFrame {
         registerBtn = FrameUtil.createButton(this,"注册",new Point(40,200),100,40);
         guestBtn=FrameUtil.createButton(this,"游客",new Point(160,200),100,40);
 
-
-        //实现按钮什么的与事件之间的关联
-        //todo提交你的用户名和密码，还没写check
+        //事件监听
         submitBtn.addActionListener(e -> {
             System.out.println("Username = " + username.getText());
             System.out.println("Password = " + password.getText());
@@ -93,21 +90,10 @@ public class LoginFrame extends JFrame {
             RegisterFrame registerFrame=new RegisterFrame(400,300);
             registerFrame.setVisible(true);
             this.setVisible(false);
-
         });
 
+        //关闭界面就结束程序
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
-
-    public void setGameFrame(GameFrame gameFrame) {
-        this.gameFrame = gameFrame;
-    }
-
-    //仿照上面的，写指向注册框架的跳转
-    public void setRegisterFrame(RegisterFrame registerFrame) {
-        this.registerFrame = registerFrame;
-    }
-
-
 }
